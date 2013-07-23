@@ -8,11 +8,23 @@ module Attachable
       has_many attachment_join_table_name, foreign_key: "#{class_name}_id", dependent: :destroy
       has_many :attachments, through: attachment_join_table_name, order: [:ordering, :id], before_add: :set_order
 
-      no_substantive_attachment_attributes = ->(attrs) do
-        att_attrs = attrs.fetch(:attachment_attributes, {})
-        att_attrs.except(:accessible, :attachment_data_attributes).values.all?(&:blank?) &&
-          att_attrs.fetch(:attachment_data_attributes, {}).values.all?(&:blank?)
+      no_substantive_attachment_attributes = ->(attributes) do
+        nested_attrs = attributes.fetch(:attachment_attributes, {})
+        attachment_attrs = nested_attrs.except(:attachment_data_attributes)
+
+        checkbox_fields = [:accessible, :unnumbered_command_paper, :unnumbered_hoc_paper]
+        potentially_blank_attrs = attachment_attrs.except(*checkbox_fields)
+        fields_empty = potentially_blank_attrs.values.all?(&:blank?)
+
+        checkbox_attrs = nested_attrs.slice(checkbox_fields)
+        checkboxes_unchecked = checkbox_attrs.values.all? { |value| value == '0' }
+
+        data_attrs = nested_attrs.fetch(:attachment_data_attributes, {})
+        data_fields_empty = data_attrs.values.all?(&:blank?)
+
+        fields_empty && checkboxes_unchecked && data_fields_empty
       end
+
       accepts_nested_attributes_for attachment_join_table_name, reject_if: no_substantive_attachment_attributes, allow_destroy: true
 
       if respond_to?(:add_trait)

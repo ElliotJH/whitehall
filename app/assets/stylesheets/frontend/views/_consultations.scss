@@ -63,10 +63,47 @@ nav.consultations_scope {
 .consultation {
   &.consultation-closed,
   &.consultation-responded {
-    .heading-block {
-      color: lighten($text-colour, 20%);
+    .headings-block {
+      .consultation-alert {
+        border: $gutter-one-sixth solid $inside-gov-brand;
+        margin: 0 $gutter;
+        padding: $gutter-one-third $gutter-one-third $gutter-one-third $gutter;
+        h2 {
+          @include heading-36;
+          font-weight: bold;
+        }
+      }
     }
   }
+
+  .consultation-block {
+    @extend %contain-floats;
+    background: $inside-gov-brand;
+    color: $white;
+    padding: $gutter-one-third;
+    .consultation-dates,
+    .summary {
+      float: left;
+      width: 33.33%;
+      span {
+        display: block;
+        abbr {
+          @include core-27;
+          &.date {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    .summary {
+      margin-top: 0;
+      width: 66.66%;
+      div {
+        border-left: 1px solid $white;
+      }
+    }
+  }
+
   .consultation-block {
     background: $inside-gov-brand;
     color: $white;
@@ -82,7 +119,6 @@ nav.consultations_scope {
     }
 
     &.consultation-open {
-      padding: $gutter-one-third 0;
 
       h2, .jump {
         @include ig-core-27;
@@ -114,11 +150,6 @@ nav.consultations_scope {
         h2, .jump {
           @include ig-core-19;
           padding: $gutter-half 0;
-        }
-        h2 {
-          float: left;
-          width: 69%;
-          border-right: 1px solid $white;
         }
         .jump {
           float: left;
@@ -160,9 +191,6 @@ nav.consultations_scope {
         padding: $gutter-half;
         .dates {
           white-space: nowrap;
-          abbr {
-            @include bold;
-          }
         }
       }
       a {
@@ -170,6 +198,7 @@ nav.consultations_scope {
       }
     }
   }
+
   .participation {
     background: $panel-colour;
     @include ig-core-19;

@@ -39,57 +39,41 @@
           </div>
         </div>
       <% else %>
+        <% if @document.response_published? %>
+          <% if @document.published_consultation_response.summary.present? %>
+            <section class="heading-block">
+              <h1>Outcome</h1>
+              <div class="content">
+                <article>
+                  <div class="body">
+                    <%= govspeak_to_html @document.published_consultation_response.summary %>
+                  </div>
+                </article>
+              </div>
+            </section>
+          <% end %>
+          <% if @document.published_consultation_response.attachments.any? %>
+            <%= render partial: "documents/attachment_full_width",
+                      locals: { document: @document.published_consultation_response,
+                        title: "Download the consultation outcome",
+                        published_on: @document.response_published_on } %>
+          <% end %>
+        <% end %>
+        <h2 class="original-consultation">Original consultation</h2>
         <div class="consultation-block <%= consultation_css_class(@document) %>">
           <div class="consultation-dates">
             <p>This consultation ran from <span><%= absolute_date(@document.opening_on, class: 'opening-on') %> to<br><%= absolute_date(@document.closing_on, class: 'closing-on') %></span></p>
           </div>
           <div class="summary">
-            <h2>Summary</h2>
-            <p><%= @document.summary %></p>
-          </div>
-      <% end %>
-
-
-      <% if @document.closed? and not @document.response_published? %>
-        <div class="consultation-block <%= consultation_css_class(@document) %>">
-          <p class="run-time">
-            This consultation ran between
-            <%= absolute_date(@document.opening_on, class: 'opening-on') %> and <%= absolute_date(@document.closing_on, class: 'closing-on') %>
-          </p>
-          <h2>We are analysing your responses</h2>
-          <p>Visit this page again soon to download the outcome to this public feedback.</p>
-        </div>
-      <% elsif @document.response_published? %>
-        <div class="consultation-block <%= consultation_css_class(@document) %>">
-          <p class="run-time">
-            We gathered responses to this consultation between
-            <span class="dates"><%= absolute_date(@document.opening_on, class: 'opening-on') %> and <%= absolute_date(@document.closing_on, class: 'closing-on') %></span>
-          </p>
-        </div>
-        <% if @document.published_consultation_response.summary.present? %>
-          <section class="heading-block">
-            <h1>Outcome</h1>
-            <div class="content">
-              <article>
-                <div class="body">
-                  <%= govspeak_to_html @document.published_consultation_response.summary %>
-                </div>
-              </article>
+            <div>
+              <h2>Summary</h2>
+              <p><%= @document.summary %></p>
             </div>
-          </section>
-        <% end %>
-        <% if @document.published_consultation_response.attachments.any? %>
-          <%= render partial: "documents/attachment_full_width",
-                    locals: { document: @document.published_consultation_response,
-                      title: "Download the consultation outcome",
-                      published_on: @document.response_published_on } %>
-        <% end %>
-      <% elsif @document.open? %>
-        <div class="consultation-block <%= consultation_css_class(@document) %>">
-          <h2>This consultation closes on <%= absolute_date(@document.closing_on, class: 'closing-on') %></h2>
-          <p class="jump"><a href="#download">Jump to consultation download</a></p>
+          </div>
         </div>
       <% end %>
+
+
 
       <section class="heading-block">
         <h1>Consultation</h1>
